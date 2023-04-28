@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CasillaPrefab
   - Tablero
+  - ContenedorCasillas
   layers:
   - Default
   - TransparentFX

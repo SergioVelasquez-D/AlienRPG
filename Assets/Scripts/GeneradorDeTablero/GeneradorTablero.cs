@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GeneradorTablero : MonoBehaviour
 {
-    //Dimensiones del tablero
+    /*//Dimensiones del tablero
     static int ancho = 10;
     static int largo = 10;
 
@@ -20,12 +20,12 @@ public class GeneradorTablero : MonoBehaviour
     static void CrearTablero()
     {
         GameObject casillaPrefab = GameObject.FindGameObjectWithTag("CasillaPrefab");
-        GameObject tablero = GameObject.FindGameObjectWithTag("Tablero");
+        GameObject contenedorCasillas = GameObject.FindGameObjectWithTag("Contenedor");
     
         // Crear casillas desde Prefabs, colocarles nombre de "lugar en el tablero"
         for (int i = 0; i < ancho; i++)
         {
-            for (int j = 0; j < ancho; j++)
+            for (int j = 0; j < largo; j++)
             {
                 GameObject goCasilla = Instantiate(casillaPrefab, tablero.transform);
                 goCasilla.name = $"{i}, {j}";
@@ -34,5 +34,5 @@ public class GeneradorTablero : MonoBehaviour
             }  
 
         }
-    }
+    }*/
 }
