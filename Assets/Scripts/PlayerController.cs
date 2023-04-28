@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // Variables that store the player's position
     public int xPos;
     public int zPos;
-    public int moveDiceValue;
-
-    private Quaternion currentRotation = Quaternion.identity;
-    private DicePlayer dicePlayer;
+    
+    public int moveDiceValue; //Dice value available for player movement
+    
+    private Quaternion currentRotation = Quaternion.identity; //current player rotation
+    private DicePlayer dicePlayer; // Comunication with DicePlayer script
+    private GameManager gameManager;
 
     void Start()
     {
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         xPos = (int)transform.position.x;
         zPos = (int)transform.position.z;
         currentRotation = transform.rotation;
@@ -25,6 +29,7 @@ public class PlayerController : MonoBehaviour
         Move();
     }
 
+    //Method in charge of moving and rotating the player depending on the value of the dice
     void Move()
     {
         if (moveDiceValue > 0)
@@ -32,11 +37,10 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.UpArrow) && zPos < 10)
             {
                 currentRotation = Quaternion.Euler(0f, 0f, 0f);
-                transform.rotation = currentRotation;
+                transform.rotation = currentRotation;               
                 transform.Translate(Vector3.forward, Space.World);
                 zPos++;
-                moveDiceValue--;
-                dicePlayer.UpdateDice(moveDiceValue);
+                ControlTurn();
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow) && zPos > 1)
             {
@@ -44,8 +48,7 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.back, Space.World);
                 zPos--;
-                moveDiceValue--;
-                dicePlayer.UpdateDice(moveDiceValue);
+                ControlTurn();
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow) && xPos < 10)
             {
@@ -53,8 +56,7 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.right, Space.World);
                 xPos++;
-                moveDiceValue--;
-                dicePlayer.UpdateDice(moveDiceValue);
+                ControlTurn();
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1)
             {
@@ -62,10 +64,18 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.left, Space.World);
                 xPos--;
-                moveDiceValue--;
-                dicePlayer.UpdateDice(moveDiceValue);
+                ControlTurn();
             }
-        }
+        }       
+    }
 
+    void ControlTurn()
+    {
+        moveDiceValue--;
+        dicePlayer.UpdateDice(moveDiceValue);
+        if (moveDiceValue == 0)
+        {
+            gameManager.SetTurn();
+        }        
     }
 }
