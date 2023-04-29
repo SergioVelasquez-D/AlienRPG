@@ -11,13 +11,15 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI activeTurnText;
     private DicePlayer dicePlayer;
     private DiceEnemy diceEnemy;
-        
+    public bool[,] spaceTaken = new bool[10, 10]; // Matrix of control of spaces taken
+
     void Start()
     {
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
         diceEnemy = GameObject.Find("Enemy Dice").GetComponent<DiceEnemy>();
         diceEnemy.gameObject.SetActive(false);
         activeTurnText.text = "Player Turn";
+        PrintTakenSpaces();
     }
 
     
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour
             dicePlayer.gameObject.SetActive(false);
             diceEnemy.gameObject.SetActive(true);
             activeTurnText.text = "Enemy Turn";
+            PrintTakenSpaces();
         }
         else if(activeTurn == ActiveTurn.Enemy)
         {            
@@ -42,6 +45,25 @@ public class GameManager : MonoBehaviour
             dicePlayer.gameObject.SetActive(true);
             dicePlayer.hasThrow = false;
             activeTurnText.text = "Player Turn";
+            PrintTakenSpaces();
+        }
+    }
+
+    // Prints the spaces taken
+    public void PrintTakenSpaces()
+    {
+        // Loop through all the X spaces of the matrix
+        for (int i = 0; i < spaceTaken.GetLength(0); i++)
+        {
+            // Loop through all the Z spaces of the matrix
+            for (int j = 0; j < spaceTaken.GetLength(1); j++)
+            {
+                // Check if the space is taken
+                if (spaceTaken[i, j] == true)
+                {
+                    Debug.Log("La casilla en X: " + i + " y Z: " + j + " está ocupada.");
+                }
+            }
         }
     }
 
