@@ -14,6 +14,10 @@ public class PlayerController : MonoBehaviour
     private DicePlayer dicePlayer; // Comunication with DicePlayer script
     private GameManager gameManager;
 
+    //PowerUp
+
+    public bool hasPowerUp = false; //Bool hasPowerUp to know if the player have or not the powerUp
+
     void Start()
     {
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
@@ -81,4 +85,14 @@ public class PlayerController : MonoBehaviour
             gameManager.Invoke("SetTurn", 1f);
         }        
     }
+
+    private void OnTriggerEnter(Collider other) //Void to verify if the player collides with the powerups
+    {
+        if (other.CompareTag("Powerup"))
+        {
+            hasPowerUp = true;
+            Destroy(other.gameObject);
+        }
+    }
 }
+
