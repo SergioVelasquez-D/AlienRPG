@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
 
     //PowerUp
 
+
+
     public bool hasPowerUp = false; //Bool hasPowerUp to know if the player have or not the powerUp
 
     void Start()
@@ -24,6 +26,7 @@ public class PlayerController : MonoBehaviour
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         xPos = (int)transform.position.x;
         zPos = (int)transform.position.z;
+        gameManager.spaceTaken[xPos, zPos] = true;
         currentRotation = transform.rotation;
     }
 
@@ -44,6 +47,7 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = currentRotation; // Set forward rotation               
                 transform.Translate(Vector3.forward, Space.World); // Move the player one step forward
                 zPos++;
+                UpdateSpaces();                
                 ControlTurn();
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow) && zPos > 1)
@@ -52,6 +56,7 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.back, Space.World);
                 zPos--;
+                UpdateSpaces();
                 ControlTurn();
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow) && xPos < 10)
@@ -60,6 +65,7 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.right, Space.World);
                 xPos++;
+                UpdateSpaces();
                 ControlTurn();
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1)
@@ -68,9 +74,29 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.left, Space.World);
                 xPos--;
+                UpdateSpaces();
                 ControlTurn();
             }
         }       
+    }
+
+    // Updates the player's position to taken
+    void UpdateSpaces()
+    {
+        // Set all spaces to false
+        for (int x = 0; x < 10; x++)
+        {
+            for (int y = 0; y < 10; y++)
+            {
+                for (int z = 0; z < 10; z++)
+                {
+                    gameManager.spaceTaken[x, y] = false;
+                }
+            }
+        }
+
+        // Set the player's current square to true
+        gameManager.spaceTaken[xPos, zPos] = true;
     }
 
     void ControlTurn()
