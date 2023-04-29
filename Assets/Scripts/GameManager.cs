@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public enum ActiveTurn { Player, Enemy }
 
 public class GameManager : MonoBehaviour
 {
     public ActiveTurn activeTurn;
+    public TextMeshProUGUI activeTurnText;
     private DicePlayer dicePlayer;
     private DiceEnemy diceEnemy;
         
@@ -14,6 +16,8 @@ public class GameManager : MonoBehaviour
     {
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
         diceEnemy = GameObject.Find("Enemy Dice").GetComponent<DiceEnemy>();
+        diceEnemy.gameObject.SetActive(false);
+        activeTurnText.text = "Player Turn";
     }
 
     
@@ -21,7 +25,7 @@ public class GameManager : MonoBehaviour
     {
        
     }
-
+    // Method to switch turn
     public void SetTurn()
     {
         if (activeTurn == ActiveTurn.Player)
@@ -29,12 +33,15 @@ public class GameManager : MonoBehaviour
             activeTurn = ActiveTurn.Enemy;
             dicePlayer.gameObject.SetActive(false);
             diceEnemy.gameObject.SetActive(true);
+            activeTurnText.text = "Enemy Turn";
         }
         else if(activeTurn == ActiveTurn.Enemy)
         {            
             activeTurn = ActiveTurn.Player;
             diceEnemy.gameObject.SetActive(false);
             dicePlayer.gameObject.SetActive(true);
+            dicePlayer.hasThrow = false;
+            activeTurnText.text = "Player Turn";
         }
     }
 
