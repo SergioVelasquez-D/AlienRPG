@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI activeTurnText;
     private DicePlayer dicePlayer;
     private DiceEnemy diceEnemy;
-    public bool[,] spaceTaken = new bool[10, 10]; // Matrix of control of spaces taken
+    public bool[,] spaceTaken = new bool[11, 11]; // Matrix of control of spaces taken
 
     void Start()
     {
@@ -53,10 +53,10 @@ public class GameManager : MonoBehaviour
     public void PrintTakenSpaces()
     {
         // Loop through all the X spaces of the matrix
-        for (int i = 0; i < spaceTaken.GetLength(0); i++)
+        for (int i = 1; i < spaceTaken.GetLength(0); i++)
         {
             // Loop through all the Z spaces of the matrix
-            for (int j = 0; j < spaceTaken.GetLength(1); j++)
+            for (int j = 1; j < spaceTaken.GetLength(1); j++)
             {
                 // Check if the space is taken
                 if (spaceTaken[i, j] == true)

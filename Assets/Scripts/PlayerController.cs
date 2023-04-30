@@ -15,9 +15,6 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
 
     //PowerUp
-
-
-
     public bool hasPowerUp = false; //Bool hasPowerUp to know if the player have or not the powerUp
 
     void Start()
@@ -41,62 +38,76 @@ public class PlayerController : MonoBehaviour
     {
         if (moveDiceValue > 0)
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow) && zPos < 10)
+            if (Input.GetKeyDown(KeyCode.UpArrow) && zPos < 10 && !gameManager.spaceTaken[xPos, zPos + 1])
             {
                 currentRotation = Quaternion.Euler(0f, 0f, 0f); //Rotation value to forward
                 transform.rotation = currentRotation; // Set forward rotation               
                 transform.Translate(Vector3.forward, Space.World); // Move the player one step forward
                 zPos++;
-                UpdateSpaces();                
+                UpdateSpaces(1);                
                 ControlTurn();
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) && zPos > 1)
+            else if (Input.GetKeyDown(KeyCode.DownArrow) && zPos > 1 && !gameManager.spaceTaken[xPos, zPos - 1])
             {
                 currentRotation = Quaternion.Euler(0f, 180f, 0f); // Rotation value to back
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.back, Space.World);
                 zPos--;
-                UpdateSpaces();
+                UpdateSpaces(2);
                 ControlTurn();
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow) && xPos < 10)
+            else if (Input.GetKeyDown(KeyCode.RightArrow) && xPos < 10 && !gameManager.spaceTaken[xPos + 1, zPos])
             {
                 currentRotation = Quaternion.Euler(0f, 90f, 0f);
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.right, Space.World);
                 xPos++;
-                UpdateSpaces();
+                UpdateSpaces(3);
                 ControlTurn();
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1)
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1 && !gameManager.spaceTaken[xPos -1, zPos])
             {
                 currentRotation = Quaternion.Euler(0f, 270f, 0f);
                 transform.rotation = currentRotation;
                 transform.Translate(Vector3.left, Space.World);
                 xPos--;
-                UpdateSpaces();
+                UpdateSpaces(4);
                 ControlTurn();
             }
         }       
     }
 
     // Updates the player's position to taken
-    void UpdateSpaces()
+    void UpdateSpaces(int value)
     {
-        // Set all spaces to false
-        for (int x = 0; x < 10; x++)
+        // Set space left to false
+        switch (value)
         {
-            for (int y = 0; y < 10; y++)
-            {
-                for (int z = 0; z < 10; z++)
-                {
-                    gameManager.spaceTaken[x, y] = false;
-                }
-            }
+            case 1:
+                gameManager.spaceTaken[xPos, zPos - 1] = false;
+                break;
+            case 2:
+                gameManager.spaceTaken[xPos, zPos + 1] = false;
+                break;
+            case 3:
+                gameManager.spaceTaken[xPos - 1, zPos] = false;
+                break;
+            case 4:
+                gameManager.spaceTaken[xPos + 1, zPos] = false;
+                break;
         }
 
         // Set the player's current square to true
         gameManager.spaceTaken[xPos, zPos] = true;
+
+        //// Set all spaces to false
+        //for (int x = 1; x < 11; x++)
+        //{
+        //    for (int y = 1; y < 11; y++)
+        //    {
+        //        gameManager.spaceTaken[x, y] = false;
+        //    }
+        //}
     }
 
     void ControlTurn()
