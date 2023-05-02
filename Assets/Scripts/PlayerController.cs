@@ -2,16 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     // Variables that store the player's position
     public int xPos;
-    public int zPos;
-    
+    public int zPos;    
     public int moveDiceValue; //Dice value available for player movement
+    public int live = 20;
+    public TextMeshProUGUI liveText;
+    public int stamina;
+    public TextMeshProUGUI staminaText;
     
-    private Quaternion currentRotation = Quaternion.identity; //Current player rotation
+    private Quaternion currentRotation = Quaternion.identity; // Current player rotation
     private DicePlayer dicePlayer; // Comunication with DicePlayer script
     private GameManager gameManager;
     private Enemy enemy;
@@ -36,6 +40,8 @@ public class PlayerController : MonoBehaviour
         currentRotation = transform.rotation;
         attackPlayerBtn.gameObject.SetActive(false);
         attackChance = false;
+        liveText.text = "Live: " + live;
+        staminaText.text = "Stamina: " + stamina;
     }
 
     
@@ -145,14 +151,14 @@ public class PlayerController : MonoBehaviour
         }
         
     }
- 
 
+    // Switch turn
     void ControlTurn()
     {
         moveDiceValue--;
         dicePlayer.UpdateDice(moveDiceValue); // Update the UI display of the player dice
 
-        // Switch turn
+        
         if (moveDiceValue == 0 && !attackChance)
         {
             // Invoke method call the "SetTurn" method of the GameManager after one second
@@ -169,6 +175,11 @@ public class PlayerController : MonoBehaviour
         endTurnBtn.gameObject.SetActive(false);
         attackPlayerBtn.gameObject.SetActive(false);
         gameManager.SetTurn();
+    }
+
+    public void UpdateStamina()
+    {
+        staminaText.text = "Stamina: " + stamina;
     }
 
     private void OnTriggerEnter(Collider other) //Void to verify if the player collides with the powerups

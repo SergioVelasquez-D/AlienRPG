@@ -9,9 +9,11 @@ public class AttackDicePlayer : MonoBehaviour
     private Button attackDiceBtn;
     public TextMeshProUGUI diceNumber;
     public bool hasThrow; // Variable to avoid multiple rolls of the dice
+    private PlayerController playerController;
 
     void Start()
     {
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         hasThrow = false;
         attackDiceBtn = GetComponent<Button>();
         attackDiceBtn.onClick.AddListener(DiceThrow);
@@ -28,6 +30,8 @@ public class AttackDicePlayer : MonoBehaviour
 
         int throwValue = Random.Range(1, 7);
         UpdateDice(throwValue);
+        playerController.stamina = throwValue;
+        playerController.UpdateStamina();
         //hasThrow = true;
     }
 

@@ -25,11 +25,6 @@ public class GameManager : MonoBehaviour
         PrintTakenSpaces();
     }
 
-    
-    void Update()
-    {
-       
-    }
     // Method to switch turn
     public void SetTurn()
     {
