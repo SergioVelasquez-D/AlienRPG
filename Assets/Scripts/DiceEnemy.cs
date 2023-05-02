@@ -16,11 +16,6 @@ public class DiceEnemy : MonoBehaviour
         diceButton.onClick.AddListener(DiceThrow);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     void DiceThrow()
     {        

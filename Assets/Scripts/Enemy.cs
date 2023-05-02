@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Element : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
-
-    // Variables that store the element's position
+    // Variables that store the enemy's position
     public int xPos;
     public int zPos;
 
@@ -20,7 +19,11 @@ public class Element : MonoBehaviour
         zPos = (int)transform.position.z;
         // Set the space taken to true
         gameManager.spaceTaken[xPos, zPos] = true;
-        gameManager.PrintTakenSpaces();
     }
 
+    
+    void Update()
+    {
+        
+    }
 }

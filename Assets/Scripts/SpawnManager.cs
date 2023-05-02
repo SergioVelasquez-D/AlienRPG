@@ -7,16 +7,16 @@ public class SpawnManager : MonoBehaviour
     public GameObject[] elementPrefabs;
     public int numElements = 5; // Number of elements on the board
 
+    List<Vector3> positions = new List<Vector3>(); // List that stores the positions taken
+
     void Start()
     {
-        SpawnElements();
+        SpawnElements();       
     }
 
     // Spawns elements at random positions
     void SpawnElements()
-    {
-        List<Vector3> positions = new List<Vector3>(); // List that saves the random positions generated
-
+    {       
         for (int i = 0; i < numElements; i++)
         {
             // Generate a random position

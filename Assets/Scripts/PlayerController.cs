@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +14,12 @@ public class PlayerController : MonoBehaviour
     private Quaternion currentRotation = Quaternion.identity; //Current player rotation
     private DicePlayer dicePlayer; // Comunication with DicePlayer script
     private GameManager gameManager;
+    private Enemy enemy;
+    private AttackPlayer attackPlayerBtn;
+
+    private bool attackChance;
+
+    public Button endTurnBtn;
 
     //PowerUp
     public bool hasPowerUp = false; //Bool hasPowerUp to know if the player have or not the powerUp
@@ -20,17 +27,26 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();        
+        enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
+        attackPlayerBtn = GameObject.Find("Attack Player Button").GetComponent<AttackPlayer>();
         xPos = (int)transform.position.x;
         zPos = (int)transform.position.z;
         gameManager.spaceTaken[xPos, zPos] = true;
         currentRotation = transform.rotation;
+        attackPlayerBtn.gameObject.SetActive(false);
+        attackChance = false;
     }
 
     
     void Update()
     {
         Move();
+
+        if (gameManager.activeTurn == ActiveTurn.Player)
+        {
+            AttackChance();
+        }            
     }
 
     // Method to moving and rotating the player depending on the value of the dice
@@ -44,8 +60,8 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = currentRotation; // Set forward rotation               
                 transform.Translate(Vector3.forward, Space.World); // Move the player one step forward
                 zPos++;
-                UpdateSpaces(1);                
-                ControlTurn();
+                UpdateSpaces(1);
+                Invoke("ControlTurn", 0.2f); // Execute method with 0.2 second delay
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow) && zPos > 1 && !gameManager.spaceTaken[xPos, zPos - 1])
             {
@@ -54,7 +70,7 @@ public class PlayerController : MonoBehaviour
                 transform.Translate(Vector3.back, Space.World);
                 zPos--;
                 UpdateSpaces(2);
-                ControlTurn();
+                Invoke("ControlTurn", 0.2f);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow) && xPos < 10 && !gameManager.spaceTaken[xPos + 1, zPos])
             {
@@ -63,7 +79,7 @@ public class PlayerController : MonoBehaviour
                 transform.Translate(Vector3.right, Space.World);
                 xPos++;
                 UpdateSpaces(3);
-                ControlTurn();
+                Invoke("ControlTurn", 0.2f);
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1 && !gameManager.spaceTaken[xPos -1, zPos])
             {
@@ -72,7 +88,7 @@ public class PlayerController : MonoBehaviour
                 transform.Translate(Vector3.left, Space.World);
                 xPos--;
                 UpdateSpaces(4);
-                ControlTurn();
+                Invoke("ControlTurn", 0.2f);
             }
         }       
     }
@@ -110,17 +126,49 @@ public class PlayerController : MonoBehaviour
         //}
     }
 
+    // Check the distance with the enemy to detect attack chance
+    void AttackChance()
+    {
+        int distanceX = Mathf.Abs(xPos - enemy.xPos); // Absolute value of the distance in X between the player and the enemy
+        int distanceZ = Mathf.Abs(zPos - enemy.zPos); // Absolute value of the distance in Z between the player and the enemy        
+        
+        // If player and enemy are in adjacent spaces on X or Z do something
+        if ((distanceX == 1 && distanceZ == 0) || (distanceX == 0 && distanceZ == 1))
+        {            
+            attackChance = true;
+            attackPlayerBtn.gameObject.SetActive(true);
+        }
+        else
+        {
+            attackChance = false;
+            attackPlayerBtn.gameObject.SetActive(false);
+        }
+        
+    }
+ 
+
     void ControlTurn()
     {
         moveDiceValue--;
         dicePlayer.UpdateDice(moveDiceValue); // Update the UI display of the player dice
 
         // Switch turn
-        if (moveDiceValue == 0)
+        if (moveDiceValue == 0 && !attackChance)
         {
             // Invoke method call the "SetTurn" method of the GameManager after one second
             gameManager.Invoke("SetTurn", 1f);
-        }        
+        }
+        else if(moveDiceValue == 0 && attackChance)
+        {
+            endTurnBtn.gameObject.SetActive(true);
+        }
+    }
+
+    public void EndTurn()
+    {
+        endTurnBtn.gameObject.SetActive(false);
+        attackPlayerBtn.gameObject.SetActive(false);
+        gameManager.SetTurn();
     }
 
     private void OnTriggerEnter(Collider other) //Void to verify if the player collides with the powerups

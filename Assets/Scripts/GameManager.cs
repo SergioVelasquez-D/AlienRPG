@@ -11,13 +11,16 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI activeTurnText;
     private DicePlayer dicePlayer;
     private DiceEnemy diceEnemy;
+    private AttackDicePlayer attackDicePlayer;
     public bool[,] spaceTaken = new bool[11, 11]; // Matrix of control of spaces taken
 
     void Start()
     {
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
         diceEnemy = GameObject.Find("Enemy Dice").GetComponent<DiceEnemy>();
+        attackDicePlayer = GameObject.Find("Attack Dice Player").GetComponent<AttackDicePlayer>();
         diceEnemy.gameObject.SetActive(false);
+        attackDicePlayer.gameObject.SetActive(false);
         activeTurnText.text = "Player Turn";
         PrintTakenSpaces();
     }
