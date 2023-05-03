@@ -30,9 +30,10 @@ public class AttackDicePlayer : MonoBehaviour
 
         int throwValue = Random.Range(1, 7);
         UpdateDice(throwValue);
-        playerController.stamina = throwValue;
+        playerController.stamina += throwValue;
         playerController.UpdateStamina();
-        //hasThrow = true;
+        hasThrow = true;
+        //attackDiceBtn.gameObject.SetActive(false);
     }
 
     public void UpdateDice(int numberToShow)

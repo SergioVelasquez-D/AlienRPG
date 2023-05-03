@@ -6,10 +6,13 @@ using UnityEngine.UI;
 public class AttackPlayer : MonoBehaviour
 {
     private Button attackBtn;
-    public Button attackDicePlayer;
+    private GameManager gameManager;
+    //public Button attackDicePlayer;
+    public GameObject attackPanel;
     
     void Start()
     {
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         attackBtn = GetComponent<Button>();
         attackBtn.onClick.AddListener(StartAttack);
     }
@@ -22,7 +25,9 @@ public class AttackPlayer : MonoBehaviour
 
     void StartAttack()
     {
-        attackDicePlayer.gameObject.SetActive(true);
+        //attackDicePlayer.gameObject.SetActive(true);
+        attackPanel.gameObject.SetActive(true);
+        gameManager.activeTurnText.text = "Player Attack";
         Debug.Log("Attack Button pressed");
     }
 }
