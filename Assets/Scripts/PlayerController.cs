@@ -8,13 +8,13 @@ public class PlayerController : MonoBehaviour
 {
     // Variables that store the player's position
     public int xPos;
-    public int zPos;    
+    public int zPos;
     public int moveDiceValue; //Dice value available for player movement
     public int live = 20;
     public TextMeshProUGUI liveText;
     public int stamina;
     public TextMeshProUGUI staminaText;
-    
+
     private Quaternion currentRotation = Quaternion.identity; // Current player rotation
     private DicePlayer dicePlayer; // Comunication with DicePlayer script
     private GameManager gameManager;
@@ -25,13 +25,12 @@ public class PlayerController : MonoBehaviour
 
     public Button endTurnBtn;
 
-    //PowerUp
-    public bool hasPowerUp = true; //Bool hasPowerUp to know if the player have or not the powerUp
+    public bool hasPowerUp; // Bool hasPowerUp to know if the player have or not the powerUp Stamina
 
     void Start()
     {
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();        
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
         attackPlayerBtn = GameObject.Find("Attack Player Button").GetComponent<AttackPlayer>();
         xPos = (int)transform.position.x;
@@ -42,10 +41,10 @@ public class PlayerController : MonoBehaviour
         attackChance = false;
         UpdateLive();
         UpdateStamina();
-        hasPowerUp = true;
+        hasPowerUp = false;
     }
 
-    
+
     void Update()
     {
         Move();
@@ -53,7 +52,7 @@ public class PlayerController : MonoBehaviour
         if (gameManager.activeTurn == ActiveTurn.Player)
         {
             AttackChance();
-        }            
+        }
     }
 
     // Method to moving and rotating the player depending on the value of the dice
@@ -88,7 +87,7 @@ public class PlayerController : MonoBehaviour
                 UpdateSpaces(3);
                 Invoke("ControlTurn", 0.2f);
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1 && !gameManager.spaceTaken[xPos -1, zPos])
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1 && !gameManager.spaceTaken[xPos - 1, zPos])
             {
                 currentRotation = Quaternion.Euler(0f, 270f, 0f);
                 transform.rotation = currentRotation;
@@ -97,7 +96,7 @@ public class PlayerController : MonoBehaviour
                 UpdateSpaces(4);
                 Invoke("ControlTurn", 0.2f);
             }
-        }       
+        }
     }
 
     // Updates the player's position to taken
@@ -138,10 +137,10 @@ public class PlayerController : MonoBehaviour
     {
         int distanceX = Mathf.Abs(xPos - enemy.xPos); // Absolute value of the distance in X between the player and the enemy
         int distanceZ = Mathf.Abs(zPos - enemy.zPos); // Absolute value of the distance in Z between the player and the enemy        
-        
+
         // If player and enemy are in adjacent spaces on X or Z do something
         if ((distanceX == 1 && distanceZ == 0) || (distanceX == 0 && distanceZ == 1))
-        {            
+        {
             attackChance = true;
             attackPlayerBtn.gameObject.SetActive(true);
         }
@@ -150,7 +149,7 @@ public class PlayerController : MonoBehaviour
             attackChance = false;
             attackPlayerBtn.gameObject.SetActive(false);
         }
-        
+
     }
 
     // Switch turn
@@ -159,13 +158,13 @@ public class PlayerController : MonoBehaviour
         moveDiceValue--;
         dicePlayer.UpdateDice(moveDiceValue); // Update the UI display of the player dice
 
-        
+
         if (moveDiceValue == 0 && !attackChance)
         {
             // Invoke method call the "SetTurn" method of the GameManager after one second
             gameManager.Invoke("SetTurn", 1f);
         }
-        else if(moveDiceValue == 0 && attackChance)
+        else if (moveDiceValue == 0 && attackChance)
         {
             endTurnBtn.gameObject.SetActive(true);
         }
@@ -190,10 +189,35 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) //Void to verify if the player collides with the powerups
     {
-        if (other.CompareTag("Powerup"))
+        if (other.CompareTag("PowerupDamage")) //PowerUp of Damage
         {
-            hasPowerUp = true;
+            Destroy(other.gameObject);           
+            live -= 5;
+            UpdateLive();
+            Debug.Log("You Take powerupDamage");
+        }
+
+        if (other.CompareTag("Powerup")) //Powerup of Stamina
+        {
             Destroy(other.gameObject);
+            hasPowerUp = true;
+            Debug.Log("You Take powerupStamina");
+        }
+
+        if (other.CompareTag("PowerupHealth")) //PowerUp of Heal
+        {
+            Destroy(other.gameObject);
+            Debug.Log("You Take powerupHealth");
+
+            if (live < 20)
+            {
+                live += 5;
+                UpdateLive();
+            }
+            else
+            {
+                live = 20;
+            }
         }
     }
 

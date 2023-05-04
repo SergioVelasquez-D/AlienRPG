@@ -7,6 +7,8 @@ TagManager:
   - Powerup
   - Element
   - Enemy
+  - PowerupDamage
+  - PowerupHealth
   layers:
   - Default
   - TransparentFX

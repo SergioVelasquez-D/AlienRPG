@@ -85,6 +85,7 @@ public class AttackManager : MonoBehaviour
     {
         playerController.stamina *= 2;
         playerController.UpdateStamina();
+        playerController.hasPowerUp = false;
         powerupBtn.gameObject.SetActive(false);
         powerupText.gameObject.SetActive(false);
     }
@@ -95,20 +96,28 @@ public class AttackManager : MonoBehaviour
         int playerStam = playerController.stamina;
 
         if (playerStam > enemyStam)
-        {
-            playerController.stamina -= enemyStam;
+        {            
             enemy.live -= playerStam - enemyStam;
             enemy.stamina = 0;
+            playerController.stamina = 0;
             UpdateData();            
             Debug.Log("Player Win");
         }
-        else if (playerStam <= enemyStam)
+        else if (playerStam < enemyStam)
         {
-            enemy.stamina -= playerStam;
             playerController.live -= enemyStam - playerStam;
             playerController.stamina = 0;
+            enemy.stamina = 0;
             UpdateData();
             Debug.Log("Enemy Win");
+        }
+        else
+        {
+            playerController.live -= 1;
+            playerController.stamina = 0;
+            enemy.stamina = 0;
+            UpdateData();
+            Debug.Log("Tie attack, player lose 1 live");
         }
 
         launchBtn.gameObject.SetActive(false);
