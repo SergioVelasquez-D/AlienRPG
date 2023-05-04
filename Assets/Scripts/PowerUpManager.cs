@@ -4,18 +4,49 @@ using UnityEngine;
 
 public class PowerUpManager : MonoBehaviour
 {
-    public int cantidadDeCura = 10; // La cantidad de curación que otorga el cofre
+    public PowerUpType powerupType;
+    public PlayerController playerController;
 
-    private void OnTriggerEnter(Collider other)
+    public void Start()
     {
-        // Si el objeto colisiona con el personaje
-        if (other.CompareTag("Player"))
+        playerController = GetComponent<PlayerController>();
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
         {
-            // Aumentar la vida del personaje por la cantidad de curación del cofre
-            //other.GetComponent<VidaDelPersonaje>().vida += cantidadDeCura;
-            Debug.Log("Agarro el cofree");
-            // Destruir el cofre
-            Destroy(gameObject);
+           
+            PlayerController playerController = other.gameObject.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                Debug.Log("Caja colisionó con el jugador");
+                switch (powerupType.type)
+                {
+                    case PowerUpType.Type.Damage:
+                        // Reduce la vida del jugador según el valor del powerup
+
+                        break;
+                    case PowerUpType.Type.Heal:
+                        // Aumenta la vida del jugador según el valor del powerup
+                        break;
+                    case PowerUpType.Type.Stamina:
+                        // Aumenta la stamina del jugador según el valor del powerup
+                        break;
+                    default:
+                        break;
+                }
+                // Destruye el powerup después de que el jugador lo haya recogido
+                //Destroy(gameObject);
+                StartCoroutine(DestroyCrate());
+            }
         }
     }
+
+    IEnumerator DestroyCrate()
+    {
+        yield return new WaitForSeconds(0.5f); // Esperar medio segundo
+        Destroy(gameObject); // Destruir el objeto
+    }
 }
+

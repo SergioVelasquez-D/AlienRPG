@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+
     // Variables that store the player's position
     public int xPos;
     public int zPos;
@@ -25,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
     //PowerUp
     public bool hasPowerUp = false; //Bool hasPowerUp to know if the player have or not the powerUp
+
+    //public PowerUpType powerupType;
 
     void Start()
     {
@@ -182,14 +185,31 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) //Void to verify if the player collides with the powerups
     {
-        if (other.CompareTag("Powerup"))
+        if (other.CompareTag("PowerupDamage")) //PowerUp of Damage
+        {
+            Destroy(other.gameObject);
+            //hasPowerUp = true;
+            live -= 5;
+            Debug.Log("live = " + live);
+        }
+
+        if (other.CompareTag("PowerupStamina")) //Powerup of Stamina
         {
             Destroy(other.gameObject);
             hasPowerUp = true;
-            live -= 5;
-            Debug.Log("live = " + live);
-           
+            Debug.Log("You Take The powerupStamina");    
         }
-    }
+
+        if (other.CompareTag("PowerupHeal")) //PowerUp of Heal
+        {
+            Destroy(other.gameObject);
+
+            if (live < 20)
+            {
+                live += 5;
+                Debug.Log("live = " + live);
+            }       
+        }
+    }          
 }
 
