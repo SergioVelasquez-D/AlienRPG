@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
             activeTurn = ActiveTurn.Enemy;
             dicePlayer.gameObject.SetActive(false);
             diceEnemy.gameObject.SetActive(true);
+            diceEnemy.DiceThrow();
             activeTurnText.text = "Enemy Turn";
             PrintTakenSpaces();
         }
@@ -59,7 +60,7 @@ public class GameManager : MonoBehaviour
                 // Check if the space is taken
                 if (spaceTaken[i, j] == true)
                 {
-                    Debug.Log("La casilla en X: " + i + " y Z: " + j + " está ocupada.");
+                    Debug.Log("La casilla en X: " + i + " y Z: " + j + " estï¿½ ocupada.");
                 }
             }
         }
