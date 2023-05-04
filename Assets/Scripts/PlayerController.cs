@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     public Button endTurnBtn;
 
     //PowerUp
-    public bool hasPowerUp = false; //Bool hasPowerUp to know if the player have or not the powerUp
+    public bool hasPowerUp = true; //Bool hasPowerUp to know if the player have or not the powerUp
 
     void Start()
     {
@@ -40,8 +40,9 @@ public class PlayerController : MonoBehaviour
         currentRotation = transform.rotation;
         attackPlayerBtn.gameObject.SetActive(false);
         attackChance = false;
-        liveText.text = "Live: " + live;
-        staminaText.text = "Stamina: " + stamina;
+        UpdateLive();
+        UpdateStamina();
+        hasPowerUp = true;
     }
 
     
@@ -182,6 +183,11 @@ public class PlayerController : MonoBehaviour
         staminaText.text = "Stamina: " + stamina;
     }
 
+    public void UpdateLive()
+    {
+        liveText.text = "Live: " + live;
+    }
+
     private void OnTriggerEnter(Collider other) //Void to verify if the player collides with the powerups
     {
         if (other.CompareTag("Powerup"))
@@ -190,5 +196,6 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
+
 }
 

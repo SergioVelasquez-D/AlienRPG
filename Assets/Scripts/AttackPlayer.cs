@@ -17,12 +17,6 @@ public class AttackPlayer : MonoBehaviour
         attackBtn.onClick.AddListener(StartAttack);
     }
 
-    
-    void Update()
-    {
-        
-    }
-
     void StartAttack()
     {
         //attackDicePlayer.gameObject.SetActive(true);
