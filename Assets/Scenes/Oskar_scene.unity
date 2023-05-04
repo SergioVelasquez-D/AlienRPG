@@ -343,6 +343,14 @@ PrefabInstance:
       propertyPath: staminaText
       value: 
       objectReference: {fileID: 1604037484}
+    - target: {fileID: 3618135569985350472, guid: 876940322f958c74fa238bfa2191c924, type: 3}
+      propertyPath: humanPlayerToLook
+      value: 
+      objectReference: {fileID: 1944345828}
+    - target: {fileID: 3618135569985350472, guid: 876940322f958c74fa238bfa2191c924, type: 3}
+      propertyPath: layerOfPlayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 876940322f958c74fa238bfa2191c924, type: 3}
 --- !u!1 &174002537
@@ -2739,6 +2747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb3e1fdfbd5d4934899b429ce7f94bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  diceNumber: {fileID: 1645902143}
 --- !u!1 &984397933
 GameObject:
   m_ObjectHideFlags: 0
@@ -5343,6 +5352,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1917816354}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1944345828 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2832867879126172134, guid: 63a15118b5172554ea5c7c3a9049d666, type: 3}
+  m_PrefabInstance: {fileID: 2832867879266935313}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1991476926
 GameObject:
   m_ObjectHideFlags: 0
@@ -5887,6 +5901,10 @@ PrefabInstance:
     - target: {fileID: 2832867879126172130, guid: 63a15118b5172554ea5c7c3a9049d666, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2832867879126172130, guid: 63a15118b5172554ea5c7c3a9049d666, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2832867879126172134, guid: 63a15118b5172554ea5c7c3a9049d666, type: 3}
       propertyPath: m_RootOrder
