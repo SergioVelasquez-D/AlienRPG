@@ -1,20 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     // Variables that store the player's position
     public int xPos;
-    public int zPos;    
+    public int zPos;
     public int moveDiceValue; //Dice value available for player movement
     public int live = 20;
     public TextMeshProUGUI liveText;
     public int stamina;
     public TextMeshProUGUI staminaText;
-    
+
     private Quaternion currentRotation = Quaternion.identity; // Current player rotation
     private DicePlayer dicePlayer; // Comunication with DicePlayer script
     private GameManager gameManager;
@@ -31,7 +29,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();        
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
         attackPlayerBtn = GameObject.Find("Attack Player Button").GetComponent<AttackPlayer>();
         xPos = (int)transform.position.x;
@@ -44,7 +42,7 @@ public class PlayerController : MonoBehaviour
         staminaText.text = "Stamina: " + stamina;
     }
 
-    
+
     void Update()
     {
         Move();
@@ -52,7 +50,7 @@ public class PlayerController : MonoBehaviour
         if (gameManager.activeTurn == ActiveTurn.Player)
         {
             AttackChance();
-        }            
+        }
     }
 
     // Method to moving and rotating the player depending on the value of the dice
@@ -87,7 +85,7 @@ public class PlayerController : MonoBehaviour
                 UpdateSpaces(3);
                 Invoke("ControlTurn", 0.2f);
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1 && !gameManager.spaceTaken[xPos -1, zPos])
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && xPos > 1 && !gameManager.spaceTaken[xPos - 1, zPos])
             {
                 currentRotation = Quaternion.Euler(0f, 270f, 0f);
                 transform.rotation = currentRotation;
@@ -96,7 +94,7 @@ public class PlayerController : MonoBehaviour
                 UpdateSpaces(4);
                 Invoke("ControlTurn", 0.2f);
             }
-        }       
+        }
     }
 
     // Updates the player's position to taken
@@ -137,10 +135,10 @@ public class PlayerController : MonoBehaviour
     {
         int distanceX = Mathf.Abs(xPos - enemy.xPos); // Absolute value of the distance in X between the player and the enemy
         int distanceZ = Mathf.Abs(zPos - enemy.zPos); // Absolute value of the distance in Z between the player and the enemy        
-        
+
         // If player and enemy are in adjacent spaces on X or Z do something
         if ((distanceX == 1 && distanceZ == 0) || (distanceX == 0 && distanceZ == 1))
-        {            
+        {
             attackChance = true;
             attackPlayerBtn.gameObject.SetActive(true);
         }
@@ -149,7 +147,7 @@ public class PlayerController : MonoBehaviour
             attackChance = false;
             attackPlayerBtn.gameObject.SetActive(false);
         }
-        
+
     }
 
     // Switch turn
@@ -158,13 +156,13 @@ public class PlayerController : MonoBehaviour
         moveDiceValue--;
         dicePlayer.UpdateDice(moveDiceValue); // Update the UI display of the player dice
 
-        
+
         if (moveDiceValue == 0 && !attackChance)
         {
             // Invoke method call the "SetTurn" method of the GameManager after one second
             gameManager.Invoke("SetTurn", 1f);
         }
-        else if(moveDiceValue == 0 && attackChance)
+        else if (moveDiceValue == 0 && attackChance)
         {
             endTurnBtn.gameObject.SetActive(true);
         }
@@ -186,8 +184,11 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Powerup"))
         {
-            hasPowerUp = true;
             Destroy(other.gameObject);
+            hasPowerUp = true;
+            live -= 5;
+            Debug.Log("live = " + live);
+           
         }
     }
 }
