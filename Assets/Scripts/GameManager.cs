@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 
 public enum ActiveTurn { Player, Enemy }
 
@@ -9,10 +12,14 @@ public class GameManager : MonoBehaviour
 {
     public ActiveTurn activeTurn;
     public TextMeshProUGUI activeTurnText;
+    public TextMeshProUGUI gameOverText;
+    public Button restartButton;
+    public bool isGameActive;
     private DicePlayer dicePlayer;
     private DiceEnemy diceEnemy;
     //private AttackDicePlayer attackDicePlayer;
     public bool[,] spaceTaken = new bool[11, 11]; // Matrix of control of spaces taken
+    public bool gameOver;
 
     void Start()
     {
@@ -23,6 +30,8 @@ public class GameManager : MonoBehaviour
         //attackDicePlayer.gameObject.SetActive(false);
         activeTurnText.text = "Player Turn";
         PrintTakenSpaces();
+
+        isGameActive = true;
     }
 
     // Method to switch turn
@@ -65,5 +74,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
- 
+    public void GameOver()
+    {
+        restartButton.gameObject.SetActive(true);
+        gameOverText.gameObject.SetActive(true);
+        //isGameActive = false;
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+
 }

@@ -188,6 +188,7 @@ public class PlayerController : MonoBehaviour
         {
             hasPowerUp = true;
             Destroy(other.gameObject);
+            gameManager.GameOver();
         }
     }
 }
