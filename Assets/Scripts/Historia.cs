@@ -25,7 +25,7 @@ public class Historia : MonoBehaviour
         string name = nombre.text;
         string tribu = clan.text;
         string loQueCultiva = material.text;
-        string u = "Marte es el cuarto planeta del sistema solar está en peligro. La humanidad quiere colonizarlo… Esta es la historia de la tribu " + tribu + " y su joven guardian llamado " + name + " quien ha decidido defender el planeta y a su tribu " + tribu + " de los invasores terrícolas que vienen a saquear todo el " + loQueCultiva + ". " + name + " espero que estés lo suficientemente preparado para defender tu mundo de los invasores humanos... Buena Suerte " + name + ".";
+        string u = "Marte el cuarto planeta del sistema solar está en peligro. La humanidad quiere colonizarlo… Esta es la historia de la tribu " + tribu + " y su joven guardian llamado " + name + " quien ha decidido defender el planeta y a su tribu " + tribu + " de los invasores terrícolas que vienen a saquear todo el " + loQueCultiva + ". " + name + " espero que estés lo suficientemente preparado para defender tu mundo de los invasores humanos... Buena Suerte " + name + ".";
         mensaje.text = u;
     }
     
