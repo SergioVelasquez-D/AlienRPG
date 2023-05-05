@@ -7,8 +7,9 @@ public class AttackPlayer : MonoBehaviour
 {
     private Button attackBtn;
     private GameManager gameManager;
-    //public Button attackDicePlayer;
+    
     public GameObject attackPanel;
+    
     
     void Start()
     {
@@ -18,8 +19,7 @@ public class AttackPlayer : MonoBehaviour
     }
 
     void StartAttack()
-    {
-        //attackDicePlayer.gameObject.SetActive(true);
+    {        
         attackPanel.gameObject.SetActive(true);
         gameManager.activeTurnText.text = "Player Attack";
         Debug.Log("Attack Button pressed");
