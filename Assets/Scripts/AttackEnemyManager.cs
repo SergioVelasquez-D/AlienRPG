@@ -99,16 +99,16 @@ public class AttackEnemyManager : MonoBehaviour
         switch (numberToShow)
         {
             case 1:
-                moveToStamEnemyDiceText.text = "�";
+                moveToStamEnemyDiceText.text = "•";
                 break;
             case 2:
-                moveToStamEnemyDiceText.text = "��";
+                moveToStamEnemyDiceText.text = "••";
                 break;
             case 3:
-                moveToStamEnemyDiceText.text = "���";
+                moveToStamEnemyDiceText.text = "•••";
                 break;
             case 4:
-                moveToStamEnemyDiceText.text = "��\n��";
+                moveToStamEnemyDiceText.text = "••\n••";
                 break;
             default:
                 moveToStamEnemyDiceText.text = "";
@@ -185,22 +185,22 @@ public class AttackEnemyManager : MonoBehaviour
         switch (numberToShow)
         {
             case 1:
-                enemyDiceText.text = "�";
+                enemyDiceText.text = "•";
                 break;
             case 2:
-                enemyDiceText.text = "��";
+                enemyDiceText.text = "••";
                 break;
             case 3:
-                enemyDiceText.text = "���";
+                enemyDiceText.text = "•••";
                 break;
             case 4:
-                enemyDiceText.text = "��\n��";
+                enemyDiceText.text = "••\n••";
                 break;
             case 5:
-                enemyDiceText.text = "��\n�\n��";
+                enemyDiceText.text = "••\n•\n••";
                 break;
             case 6:
-                enemyDiceText.text = "���\n���";
+                enemyDiceText.text = "•••\n•••";
                 break;
             default:
                 enemyDiceText.text = "";
