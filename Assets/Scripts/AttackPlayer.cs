@@ -19,9 +19,12 @@ public class AttackPlayer : MonoBehaviour
     }
 
     void StartAttack()
-    {        
-        attackPanel.gameObject.SetActive(true);
-        gameManager.activeTurnText.text = "Player Attack";
-        Debug.Log("Attack Button pressed");
+    {    
+        if (!gameManager.gameOver)
+        {
+            attackPanel.gameObject.SetActive(true);
+            gameManager.activeTurnText.text = "Player Attack";
+            Debug.Log("Attack Button pressed");
+        }        
     }
 }

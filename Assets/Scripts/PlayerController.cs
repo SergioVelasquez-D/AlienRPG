@@ -172,9 +172,12 @@ public class PlayerController : MonoBehaviour
 
     public void EndTurn()
     {
-        endTurnBtn.gameObject.SetActive(false);
-        attackPlayerBtn.gameObject.SetActive(false);
-        gameManager.SetTurn();
+        if (!gameManager.gameOver)
+        {
+            endTurnBtn.gameObject.SetActive(false);
+            attackPlayerBtn.gameObject.SetActive(false);
+            gameManager.SetTurn();
+        }        
     }
 
     public void UpdateStamina()

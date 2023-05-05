@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
         }
         else if (enemy.live <= 0)
         {
+            gameOver = true;
             PlayerWin();
         }
     }

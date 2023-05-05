@@ -23,6 +23,10 @@ public class DicePlayer : MonoBehaviour
 
     void DiceThrow()
     {
+        if (gameManager.gameOver)
+        {
+            return;
+        }
         // Check if the dice has already been rolled this turn
         if (hasThrow)
         {
