@@ -4,21 +4,21 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-enum AttackStatus { firstAttack, newAttack }
 
 public class AttackManager : MonoBehaviour
 {
     public TextMeshProUGUI moveToStamText;
     public TextMeshProUGUI powerupText;
+    public TextMeshProUGUI enemyDiceText;
     public Button moveToStamBtn;
     public Button powerupBtn;
     public Button launchBtn;
+    public Button powerupEnemyBtn;
+    public TextMeshProUGUI powerupEnemyText;
     private PlayerController playerController;
     private DicePlayer dicePlayer;
     private AttackDicePlayer attackDicePlayer;
     private Enemy enemy;
-
-    private AttackStatus attackStatus;
 
 
     void Start()
@@ -27,17 +27,20 @@ public class AttackManager : MonoBehaviour
         dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
         attackDicePlayer = GameObject.Find("Attack Dice Player").GetComponent<AttackDicePlayer>();
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
+        
         ShowMoveToStamina();
         ShowPowerup();
         StaminaEnemy();
+        EnemyHasPowerup();
     }
 
     private void OnEnable()
-    {
-        ShowMoveToStamina();
+    {     
+        ShowMoveToStamina();        
         ShowPowerup();
         launchBtn.gameObject.SetActive(true);
         StaminaEnemy();
+        EnemyHasPowerup();
     }
 
     void StaminaEnemy()
@@ -45,6 +48,53 @@ public class AttackManager : MonoBehaviour
         int staminaEnemy = Random.Range(1, 7);
         enemy.stamina = staminaEnemy;
         enemy.UpdateStamina();
+        UpdateEnemyDice(staminaEnemy);
+    }
+
+    void UpdateEnemyDice(int numberToShow)
+    {
+        switch (numberToShow)
+        {
+            case 1:
+                enemyDiceText.text = "•";
+                break;
+            case 2:
+                enemyDiceText.text = "••";
+                break;
+            case 3:
+                enemyDiceText.text = "•••";
+                break;
+            case 4:
+                enemyDiceText.text = "••\n••";
+                break;
+            case 5:
+                enemyDiceText.text = "••\n•\n••";
+                break;
+            case 6:
+                enemyDiceText.text = "•••\n•••";
+                break;
+            default:
+                enemyDiceText.text = "";
+                break;
+
+        }
+    }
+
+    public void EnemyHasPowerup()
+    {
+        if (enemy.hasPowerUp)
+        {
+            powerupEnemyBtn.gameObject.SetActive(true);
+            powerupEnemyText.gameObject.SetActive(true);
+            enemy.stamina *= 2;
+            enemy.UpdateStamina();
+            enemy.hasPowerUp = false;
+        }
+        else
+        {
+            powerupEnemyBtn.gameObject.SetActive(false);
+            powerupEnemyText.gameObject.SetActive(false);
+        }
     }
 
     public void ShowMoveToStamina()

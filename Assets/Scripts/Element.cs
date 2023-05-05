@@ -20,7 +20,7 @@ public class Element : MonoBehaviour
         zPos = (int)transform.position.z;
         // Set the space taken to true
         gameManager.spaceTaken[xPos, zPos] = true;
-        gameManager.PrintTakenSpaces();
+        //gameManager.PrintTakenSpaces();
     }
 
 }

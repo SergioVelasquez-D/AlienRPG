@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
         diceEnemy.gameObject.SetActive(false);
         activeTurnText.text = "Player Turn";
-        PrintTakenSpaces();
+        //PrintTakenSpaces();
     }
 
     private void Update()
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
             diceEnemy.gameObject.SetActive(true);
             diceEnemy.DiceThrow();
             activeTurnText.text = "Enemy Turn";
-            PrintTakenSpaces();
+            //PrintTakenSpaces();
         }
         else if (activeTurn == ActiveTurn.Enemy)
         {
@@ -71,27 +71,27 @@ public class GameManager : MonoBehaviour
             dicePlayer.gameObject.SetActive(true);
             dicePlayer.hasThrow = false;
             activeTurnText.text = "Player Turn";
-            PrintTakenSpaces();
+            //PrintTakenSpaces();
         }
     }
 
     // Prints the spaces taken
-    public void PrintTakenSpaces()
-    {
-        // Loop through all the X spaces of the matrix
-        for (int i = 1; i < spaceTaken.GetLength(0); i++)
-        {
-            // Loop through all the Z spaces of the matrix
-            for (int j = 1; j < spaceTaken.GetLength(1); j++)
-            {
-                // Check if the space is taken
-                if (spaceTaken[i, j] == true)
-                {
-                    Debug.Log("La casilla en X: " + i + " y Z: " + j + " está ocupada.");
-                }
-            }
-        }
-    }
+    //public void PrintTakenSpaces()
+    //{
+    //    // Loop through all the X spaces of the matrix
+    //    for (int i = 1; i < spaceTaken.GetLength(0); i++)
+    //    {
+    //        // Loop through all the Z spaces of the matrix
+    //        for (int j = 1; j < spaceTaken.GetLength(1); j++)
+    //        {
+    //            // Check if the space is taken
+    //            if (spaceTaken[i, j] == true)
+    //            {
+    //                Debug.Log("La casilla en X: " + i + " y Z: " + j + " está ocupada.");
+    //            }
+    //        }
+    //    }
+    //}
 
     void GameOver()
     {

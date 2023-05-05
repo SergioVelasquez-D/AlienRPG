@@ -184,7 +184,7 @@ public class PlayerController : MonoBehaviour
 
     public void UpdateLive()
     {
-        liveText.text = "Live: " + live;
+        liveText.text = "Alien Live: " + live;
     }
 
     private void OnTriggerEnter(Collider other) //Void to verify if the player collides with the powerups

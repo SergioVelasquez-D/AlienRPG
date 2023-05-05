@@ -6,26 +6,27 @@ using TMPro;
 
 public class DiceEnemy : MonoBehaviour
 {
-    private Button diceButton;
+    //private Button diceButton;
     private GameManager gameManager;
-    private Enemy enemyMove;
+    private Enemy enemy;
     public TextMeshProUGUI diceNumber;
 
     void Start()
     {
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-        diceButton = GetComponent<Button>();
-        diceButton.onClick.AddListener(DiceThrow);
-        enemyMove = GameObject.Find("Enemy").GetComponent<Enemy>();
+        //diceButton = GetComponent<Button>();
+        //diceButton.onClick.AddListener(DiceThrow);
+        enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
     }
 
 
     public void DiceThrow()
-    {        
-        //gameManager.SetTurn();
+    {     
         int throwValue = Random.Range(0, 5);
         UpdateDice(throwValue);
-        enemyMove.moveDiceValue = throwValue;
+        enemy.moveDiceValue = throwValue;
+        Debug.Log("Enemy Dice Throw: " + throwValue);
+        enemy.MoveEnemy(throwValue);
 
         if (throwValue == 0)
         {
@@ -40,16 +41,16 @@ public class DiceEnemy : MonoBehaviour
         switch (numberToShow)
         {
             case 1:
-                diceNumber.text = "�";
+                diceNumber.text = "•";
                 break;
             case 2:
-                diceNumber.text = "��";
+                diceNumber.text = "••";
                 break;
             case 3:
-                diceNumber.text = "���";
+                diceNumber.text = "•••";
                 break;
             case 4:
-                diceNumber.text = "��\n��";
+                diceNumber.text = "••\n••";
                 break;
             default:
                 diceNumber.text = "";

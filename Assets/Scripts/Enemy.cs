@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
     private GameManager gameManager;
     private DiceEnemy diceEnemy; // Comunication with DiceEnemy script
     private PlayerController humanPlayer; // variables that are needed to know the position of the player
+    public GameObject attackEnemyPanel;
 
     //-------Look to the humanPlayer------
     [SerializeField] float alertRange = 13; // tamaño de alerta del enemigo
@@ -24,14 +25,16 @@ public class Enemy : MonoBehaviour
     public Transform humanPlayerToLook;  // Variable para girar la rotacion(cara) del enemigo.
     public float towardsPlayer; // variable angulo mirada
 
-
+    public bool attackChance;
     public int moveDiceValue; //Dice value available for player movement
+
+    public bool hasPowerUp;
 
     void Start()
     {
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         diceEnemy = GameObject.Find("Enemy Dice").GetComponent<DiceEnemy>();
-        humanPlayer = GameObject.Find("Player").GetComponent<PlayerController>();
+        humanPlayer = GameObject.Find("Player").GetComponent<PlayerController>();        
 
         // Update the start position of the element
         xPos = (int)transform.position.x;
@@ -40,147 +43,152 @@ public class Enemy : MonoBehaviour
         gameManager.spaceTaken[xPos, zPos] = true;
         UpdateLive();
         UpdateStamina();
+        hasPowerUp = false;
     }
 
     void Update()
     {
         DiscoverThePlayer();
-        MoveEnemy();
-        EnemyAttack();
+
+        if (gameManager.activeTurn == ActiveTurn.Enemy)
+        {
+            EnemyAttack();
+        }
     }
 
-    void MoveEnemy()
+    public void MoveEnemy(int diceThrow)
     {
+        StartCoroutine(MoveEnemyCoroutine(diceThrow));        
+    }
 
-        if (moveDiceValue > 0)
+    IEnumerator MoveEnemyCoroutine(int diceThrow)
+    {
+        for (int i = 1; i < diceThrow + 1; i++)            
         {
-            Debug.Log("VALOR DADO ENEMIGO: " + moveDiceValue);
-            for (int i = 0; i < moveDiceValue; i++)
+            EnemyAttack();
+
+            if (!attackChance)
             {
-                Invoke("MovimientoEnemigo", 0.3f);
-                ControlTurn();
+                yield return new WaitForSeconds(0.7f);
+                MoveManager();
             }
-
         }
-
     }
 
     void ControlTurn()
-    {
-        moveDiceValue--;
-        diceEnemy.UpdateDice(moveDiceValue); // Update the UI display of the player dice
-
+    {      
         // Switch turn
-        if (moveDiceValue == 0) //&& !attackChance)
+        if (moveDiceValue == 0 && !attackChance)
         {
             // Invoke method call the "SetTurn" method of the GameManager after one second
             gameManager.Invoke("SetTurn", 1f);
-        }
-        /*else if(moveDiceValue == 0) //&& attackChance)
-        {
-            endTurnBtn.gameObject.SetActive(true);
-        }*/
+        }       
     }
 
-    void MovimientoEnemigo()
+    void MoveManager()
     {
-        
-        int distanceX = (humanPlayer.xPos - xPos); // Distance in X between the humanPlayer and the enemy
-        int distanceZ = (humanPlayer.zPos - zPos); // Distance in z between the humanPlayer and the enemy
 
-        if ((distanceX > 1 ) || (distanceX == 1 && distanceZ == -1) || (distanceX == 1 && distanceZ == 1) )
+        int distanceX = (humanPlayer.xPos - xPos); // Distance in X between the humanPlayer and the enemy
+        int distanceZ = (humanPlayer.zPos - zPos); // Distance in z between the humanPlayer and the enemy        
+
+        if (distanceZ < 0 && zPos > 1 && !gameManager.spaceTaken[xPos, zPos - 1])
         {
-            if (!(gameManager.spaceTaken[xPos+1, zPos])){
-            transform.Translate(1, 0, 0, Space.World); // Move the enemy one step right
-            xPos++;
-            UpdateSpaces(3);
-            }
-            else if (zPos > 1 && (!(gameManager.spaceTaken[xPos+1, zPos-1]))){
-                transform.Translate(0, 0, -1, Space.World);
-                zPos--;
-                transform.Translate(1, 0, 0, Space.World);
-                xPos++;
-                UpdateSpaces(5);
-            }
-            else if (zPos < 10 && (!(gameManager.spaceTaken[xPos+1, zPos+1]))){
-                transform.Translate(0, 0, 1, Space.World);
-                zPos++;
-                transform.Translate(1, 0, 0, Space.World);
-                xPos++;
-                UpdateSpaces(6);
-            }
-        }
-        else if (distanceX < -1 || (distanceX == -1 && distanceZ == -1) || (distanceX == -1 && distanceZ == 1))
-        {
-            if (!gameManager.spaceTaken[xPos-1, zPos]){
-            transform.Translate(-1, 0, 0, Space.World); // Move the enemy one step to left
-            xPos--;
-            UpdateSpaces(4);
-            }
-            else if (zPos > 1 && (!(gameManager.spaceTaken[xPos-1, zPos-1]))){
-                transform.Translate(0, 0, -1, Space.World);
-                zPos--;
-                transform.Translate(-1, 0, 0, Space.World);
-                xPos--;
-                UpdateSpaces(7);
-            }
-            else if (zPos < 10 && (!(gameManager.spaceTaken[xPos-1, zPos+1]))){
-                transform.Translate(0, 0, 1, Space.World);
-                zPos++;
-                transform.Translate(-1, 0, 0, Space.World);
-                xPos--;
-                UpdateSpaces(8);
-            }
-        }
-        else if (distanceZ > 1 || (distanceZ == 1 && distanceX == 1) || (distanceZ == 1 && distanceX == - 1))
-        {
-            if (!gameManager.spaceTaken[zPos+1, xPos]){
-            transform.Translate(0, 0, 1, Space.World); // Move the enemy one step backward
-            zPos++;
-            UpdateSpaces(1);
-            }
-            else if (xPos > 1 && (!(gameManager.spaceTaken[xPos-1, zPos+1]))){
-                transform.Translate(-1, 0, 0, Space.World);
-                xPos--;
-                transform.Translate(0, 0, 1, Space.World);
-                zPos++;
-                UpdateSpaces(8);
-            }
-            else if (xPos < 10 && (!(gameManager.spaceTaken[xPos+1, zPos+1]))){
-                transform.Translate(1, 0, 0, Space.World);
-                xPos++;
-                transform.Translate(0, 0, 1, Space.World);
-                zPos++;
-                UpdateSpaces(6);
-            }
-        }
-        else if (distanceZ < -1 || (distanceZ == -1 && distanceX == 1) || (distanceZ == -1 && distanceX == - 1))
-        {
-            if (!gameManager.spaceTaken[zPos-1, xPos]){
-            transform.Translate(0, 0, -1, Space.World); // Move the enemy one step forward
+            transform.Translate(Vector3.back, Space.World);
             zPos--;
             UpdateSpaces(2);
-            }
-            else if (xPos > 1 && (!(gameManager.spaceTaken[xPos-1, zPos-1]))){
-                transform.Translate(-1, 0, 0, Space.World);
-                xPos--;
-                transform.Translate(0, 0, -1, Space.World);
-                zPos--;
-                UpdateSpaces(7);
-            }
-            else if (xPos < 10 && (!(gameManager.spaceTaken[xPos+1, zPos-1]))){
-                transform.Translate(1, 0, 0, Space.World);
-                xPos++;
-                transform.Translate(0, 0, -1, Space.World);
-                zPos--;
-                UpdateSpaces(5);
-            }
+            Invoke("ControlTurn", 0.2f);
         }
+        else if (distanceZ > 0 && zPos < 10 && !gameManager.spaceTaken[xPos, zPos + 1])
+        {
+            transform.Translate(Vector3.forward, Space.World);
+            zPos++;
+            UpdateSpaces(1);
+            Invoke("ControlTurn", 0.2f);
+        }
+        else if (distanceX < 0 && xPos > 1 && !gameManager.spaceTaken[xPos - 1, zPos])
+        {
+            transform.Translate(Vector3.left, Space.World);
+            xPos--;
+            UpdateSpaces(4);
+            Invoke("ControlTurn", 0.2f);
+        }
+        else if (distanceX > 0 && xPos < 10 && !gameManager.spaceTaken[xPos + 1, zPos])
+        {
+            transform.Translate(Vector3.right, Space.World);
+            xPos++;
+            UpdateSpaces(3);
+            Invoke("ControlTurn", 0.2f);
+        }
+        else
+        {
+            int index = Random.Range(1, 4);
+            switch (index)
+            {
+                case 1:
+                    if (zPos > 1 && !gameManager.spaceTaken[xPos, zPos - 1])
+                    {
+                        transform.Translate(Vector3.back, Space.World);
+                        zPos--;
+                        UpdateSpaces(2);
+                        Invoke("ControlTurn", 0.2f);
+                    }
+                    else
+                    {
+                        goto case 2;
+                    }
+                    break;
+
+                case 2:
+                    if (zPos < 10 && !gameManager.spaceTaken[xPos, zPos + 1])
+                    {
+                        transform.Translate(Vector3.forward, Space.World);
+                        zPos++;
+                        UpdateSpaces(1);
+                        Invoke("ControlTurn", 0.2f);
+                    }
+                    else
+                    {
+                        goto case 3;
+                    }
+                    break;
+
+                case 3:
+                    if (xPos > 1 && !gameManager.spaceTaken[xPos - 1, zPos])
+                    {
+                        transform.Translate(Vector3.left, Space.World);
+                        xPos--;
+                        UpdateSpaces(4);
+                        Invoke("ControlTurn", 0.2f);
+                    }
+                    else
+                    {
+                        goto case 4;
+                    }
+                    break;
+
+                case 4:
+                    if (xPos < 10 && !gameManager.spaceTaken[xPos + 1, zPos])
+                    {
+                        transform.Translate(Vector3.right, Space.World);
+                        xPos++;
+                        UpdateSpaces(3);
+                        Invoke("ControlTurn", 0.2f);
+                    }
+                    else
+                    {
+                        goto case 1;
+                    }
+                    break;
+            }
+        }        
     }
 
     // Updates the enemy's position to taken
     void UpdateSpaces(int value)
     {
+        moveDiceValue--;
+        diceEnemy.UpdateDice(moveDiceValue);
+
         // Set space left to false
         switch (value)
         {
@@ -195,18 +203,6 @@ public class Enemy : MonoBehaviour
                 break;
             case 4:
                 gameManager.spaceTaken[xPos + 1, zPos] = false;
-                break;
-            case 5:
-                gameManager.spaceTaken[xPos+1, zPos - 1] = false;
-                break;
-            case 6:
-                gameManager.spaceTaken[xPos+1, zPos + 1] = false;
-                break;
-            case 7:
-                gameManager.spaceTaken[xPos - 1, zPos-1] = false;
-                break;
-            case 8:
-                gameManager.spaceTaken[xPos - 1, zPos+1] = false;
                 break;
         }
 
@@ -223,7 +219,8 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, alertRange);
     }
 
-    void DiscoverThePlayer(){
+    void DiscoverThePlayer()
+    {
         recognizePlayer = Physics.CheckSphere(transform.position, alertRange, layerOfPlayer);
 
         if (recognizePlayer == true)
@@ -239,31 +236,58 @@ public class Enemy : MonoBehaviour
     {
         int distanceX = Mathf.Abs(humanPlayer.xPos - xPos); // Absolute value of the distance in X between the humanPlayer and the enemy
         int distanceZ = Mathf.Abs(humanPlayer.zPos - zPos); // Absolute value of the distance in Z between the humanPlayer and the enemy        
-        
+
         // If player and enemy are in adjacent spaces on X or Z do something
         if ((distanceX == 1 && distanceZ == 0) || (distanceX == 0 && distanceZ == 1))
         {            
-            //attackChance = true;
-            int throwValue = Random.Range(1, 7);
-            //aqui se activaba el texto de ataque y daba el valor, podria ser el metodo UpdateStamina
-        }
-        else
-        {
-            //staminaText.gameObject.SetActive(false);
-            //se termina el turno??
-        }
-        
+            attackChance = true;
+            gameManager.activeTurnText.text = "Enemy Attack";
+            attackEnemyPanel.gameObject.SetActive(true);
+        }     
     }
 
     public void UpdateStamina()
     {
         staminaText.gameObject.SetActive(true);
         staminaText.text = "Stamina: " + stamina;
-        
     }
 
     public void UpdateLive()
     {
-        liveText.text = "Live: " + live;
+        liveText.text = "Human Live: " + live;
+    }
+
+    private void OnTriggerEnter(Collider other) //Void to verify if the player collides with the powerups
+    {
+        if (other.CompareTag("PowerupDamage")) //PowerUp of Damage
+        {
+            Destroy(other.gameObject);
+            live -= 5;
+            UpdateLive();
+            Debug.Log("Enemy Take powerupDamage");
+        }
+
+        if (other.CompareTag("Powerup")) //Powerup of Stamina
+        {
+            Destroy(other.gameObject);
+            hasPowerUp = true;
+            Debug.Log("Enemy Take powerupStamina");
+        }
+
+        if (other.CompareTag("PowerupHealth")) //PowerUp of Heal
+        {
+            Destroy(other.gameObject);
+            Debug.Log("Enemy Take powerupHealth");
+
+            if (live < 20)
+            {
+                live += 5;
+                UpdateLive();
+            }
+            else
+            {
+                live = 20;
+            }
+        }
     }
 }
