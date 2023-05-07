@@ -9,11 +9,13 @@ public class AttackPlayer : MonoBehaviour
     private GameManager gameManager;
     
     public GameObject attackPanel;
+    private AttackManager attackManager;
     
     
     void Start()
     {
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        attackManager = GameObject.Find("AttackManager").GetComponent<AttackManager>();
         attackBtn = GetComponent<Button>();
         attackBtn.onClick.AddListener(StartAttack);
     }
@@ -23,8 +25,8 @@ public class AttackPlayer : MonoBehaviour
         if (!gameManager.gameOver)
         {
             attackPanel.gameObject.SetActive(true);
-            gameManager.activeTurnText.text = "Player Attack";
-            Debug.Log("Attack Button pressed");
+            attackManager.SetNewAttack();
+            gameManager.activeTurnText.text = "Player Attack";            
         }        
     }
 }

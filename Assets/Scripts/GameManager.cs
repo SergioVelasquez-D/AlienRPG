@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI playerWinText;
     public Button restartBtn;
     private DicePlayer dicePlayer;
-    private DiceEnemy diceEnemy;
+    private DiceEnemy diceEnemy;    
     private PlayerController playerController;
     private Enemy enemy;
 
@@ -29,7 +29,9 @@ public class GameManager : MonoBehaviour
         diceEnemy = GameObject.Find("Enemy Dice").GetComponent<DiceEnemy>();
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
-        diceEnemy.gameObject.SetActive(false);
+        diceEnemy.transform.GetChild(0)
+                           .GetComponentInChildren<TextMeshProUGUI>().enabled = false;
+        diceEnemy.gameObject.GetComponent<Image>().enabled = false;        
         activeTurnText.text = "Player Turn";
         //PrintTakenSpaces();
     }
@@ -60,7 +62,9 @@ public class GameManager : MonoBehaviour
         {
             activeTurn = ActiveTurn.Enemy;
             dicePlayer.gameObject.SetActive(false);
-            diceEnemy.gameObject.SetActive(true);
+            diceEnemy.gameObject.GetComponent<Image>().enabled = true;
+            diceEnemy.transform.GetChild(0)
+                               .GetComponentInChildren<TextMeshProUGUI>().enabled = true;
             diceEnemy.DiceThrow();
             activeTurnText.text = "Enemy Turn";
             //PrintTakenSpaces();
@@ -68,7 +72,9 @@ public class GameManager : MonoBehaviour
         else if (activeTurn == ActiveTurn.Enemy)
         {
             activeTurn = ActiveTurn.Player;
-            diceEnemy.gameObject.SetActive(false);
+            diceEnemy.transform.GetChild(0)
+                               .GetComponentInChildren<TextMeshProUGUI>().enabled = false;
+            diceEnemy.gameObject.GetComponent<Image>().enabled = false;            
             dicePlayer.gameObject.SetActive(true);
             dicePlayer.hasThrow = false;
             activeTurnText.text = "Player Turn";

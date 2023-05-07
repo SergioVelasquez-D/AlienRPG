@@ -10,32 +10,31 @@ public class AttackManager : MonoBehaviour
     public TextMeshProUGUI moveToStamText;
     public TextMeshProUGUI powerupText;
     public TextMeshProUGUI enemyDiceText;
+    public TextMeshProUGUI diceNumberMoveToSpam;
     public Button moveToStamBtn;
     public Button powerupBtn;
     public Button launchBtn;
     public Button powerupEnemyBtn;
     public TextMeshProUGUI powerupEnemyText;
+    public GameObject attackPanel;
     private PlayerController playerController;
     private DicePlayer dicePlayer;
     private AttackDicePlayer attackDicePlayer;
     private Enemy enemy;
 
+    private bool hasThrowMoveToSpam;
+
 
     void Start()
     {
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-        dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();
-        attackDicePlayer = GameObject.Find("Attack Dice Player").GetComponent<AttackDicePlayer>();
+        dicePlayer = GameObject.Find("Player Dice").GetComponent<DicePlayer>();        
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
-        
-        ShowMoveToStamina();
-        ShowPowerup();
-        StaminaEnemy();
-        EnemyHasPowerup();
     }
 
-    private void OnEnable()
-    {     
+    public void SetNewAttack()
+    {
+        attackDicePlayer = GameObject.Find("Attack Dice Player").GetComponent<AttackDicePlayer>();
         ShowMoveToStamina();        
         ShowPowerup();
         launchBtn.gameObject.SetActive(true);
@@ -43,6 +42,7 @@ public class AttackManager : MonoBehaviour
         EnemyHasPowerup();
     }
 
+    // Generates random stamina value of the enemy
     void StaminaEnemy()
     {
         int staminaEnemy = Random.Range(1, 7);
@@ -51,6 +51,7 @@ public class AttackManager : MonoBehaviour
         UpdateEnemyDice(staminaEnemy);
     }
 
+    // Displays the stamina value of the enemy on the dice
     void UpdateEnemyDice(int numberToShow)
     {
         switch (numberToShow)
@@ -80,6 +81,7 @@ public class AttackManager : MonoBehaviour
         }
     }
 
+    // Check if the enemy has the stamina powerup and apply the powerup action
     public void EnemyHasPowerup()
     {
         if (enemy.hasPowerUp)
@@ -97,9 +99,9 @@ public class AttackManager : MonoBehaviour
         }
     }
 
+    // Check if the player has movement points and show the dice to convert them to stamina points
     public void ShowMoveToStamina()
-    {
-        Debug.Log("Player Move Dice Value: " + playerController.moveDiceValue);
+    {        
         if (playerController.moveDiceValue > 0)
         {
             moveToStamText.gameObject.SetActive(true);
@@ -107,16 +109,44 @@ public class AttackManager : MonoBehaviour
         }        
     }
 
+    // Converts the player's movement points to stamina points
     public void MoveToStamina()
     {
-        playerController.stamina += playerController.moveDiceValue;
-        playerController.moveDiceValue = 0;
-        playerController.UpdateStamina();
-        dicePlayer.UpdateDice(playerController.moveDiceValue);
-        moveToStamText.gameObject.SetActive(false);
-        moveToStamBtn.gameObject.SetActive(false);
+        if (!hasThrowMoveToSpam)
+        {
+            int movePoints = playerController.moveDiceValue;
+            playerController.stamina += playerController.moveDiceValue;
+            playerController.moveDiceValue = 0;
+            playerController.UpdateStamina();
+            dicePlayer.UpdateDice(playerController.moveDiceValue);
+            UpdateMoveToStamDice(movePoints);
+            hasThrowMoveToSpam = true;
+        }             
     }
 
+    public void UpdateMoveToStamDice(int numberToShow)
+    {
+        switch (numberToShow)
+        {
+            case 1:
+                diceNumberMoveToSpam.text = "•";
+                break;
+            case 2:
+                diceNumberMoveToSpam.text = "••";
+                break;
+            case 3:
+                diceNumberMoveToSpam.text = "•••";
+                break;
+            case 4:
+                diceNumberMoveToSpam.text = "••\n••";
+                break;
+            default:
+                diceNumberMoveToSpam.text = "";
+                break;
+        }
+    }
+
+    // Check if the player has the stamina powerup
     public void ShowPowerup()
     {
         if (playerController.hasPowerUp)
@@ -131,6 +161,7 @@ public class AttackManager : MonoBehaviour
         }
     }
 
+    // Apply the powerup action to player
     public void Powerup()
     {
         playerController.stamina *= 2;
@@ -171,7 +202,7 @@ public class AttackManager : MonoBehaviour
         }
 
         launchBtn.gameObject.SetActive(false);
-        gameObject.SetActive(false);
+        attackPanel.gameObject.SetActive(false);
     }
 
     void UpdateData()
@@ -182,6 +213,11 @@ public class AttackManager : MonoBehaviour
         enemy.UpdateLive();
         attackDicePlayer.hasThrow = false;
         attackDicePlayer.UpdateDice(0);
+        UpdateMoveToStamDice(0);
+        moveToStamText.gameObject.SetActive(false);
+        moveToStamBtn.gameObject.SetActive(false);
+        hasThrowMoveToSpam = false;
+
         if (playerController.moveDiceValue == 0)
         {
             playerController.endTurnBtn.gameObject.SetActive(true);

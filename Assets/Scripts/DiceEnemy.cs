@@ -14,18 +14,15 @@ public class DiceEnemy : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-        //diceButton = GetComponent<Button>();
-        //diceButton.onClick.AddListener(DiceThrow);
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
     }
 
-
+    // Enemy movement dice roll
     public void DiceThrow()
     {     
         int throwValue = Random.Range(0, 5);
         UpdateDice(throwValue);
-        enemy.moveDiceValue = throwValue;
-        Debug.Log("Enemy Dice Throw: " + throwValue);
+        enemy.moveDiceValue = throwValue;        
         enemy.MoveEnemy(throwValue);
 
         if (throwValue == 0)
@@ -34,8 +31,7 @@ public class DiceEnemy : MonoBehaviour
         }
     }
 
-    // Method to update the UI display of the player dice
-
+    // Update the UI display of the enemy movement dice
     public void UpdateDice(int numberToShow)
     {
         switch (numberToShow)

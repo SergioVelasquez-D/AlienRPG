@@ -65,7 +65,6 @@ public class DicePlayer : MonoBehaviour
             default:
                 diceNumber.text = "";
                 break;
-
         }        
     }
 

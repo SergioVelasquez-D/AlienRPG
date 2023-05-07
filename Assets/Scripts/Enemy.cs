@@ -16,16 +16,18 @@ public class Enemy : MonoBehaviour
     private GameManager gameManager;
     private DiceEnemy diceEnemy; // Comunication with DiceEnemy script
     private PlayerController humanPlayer; // variables that are needed to know the position of the player
+    private AttackEnemyManager attackEnemyManager;
     public GameObject attackEnemyPanel;
 
     //-------Look to the humanPlayer------
-    [SerializeField] float alertRange = 13; // tamaño de alerta del enemigo
+    [SerializeField] float alertRange = 13; // Enemy alert size
     public LayerMask layerOfPlayer; // El player tiene un Layer Tag de "Player"
     public bool recognizePlayer; //Comprueba si el Player entro al rango de alerta
     public Transform humanPlayerToLook;  // Variable para girar la rotacion(cara) del enemigo.
     public float towardsPlayer; // variable angulo mirada
 
     public bool attackChance;
+    public bool attackExecuted = false;
     public int moveDiceValue; //Dice value available for player movement
 
     public bool hasPowerUp;
@@ -34,7 +36,8 @@ public class Enemy : MonoBehaviour
     {
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         diceEnemy = GameObject.Find("Enemy Dice").GetComponent<DiceEnemy>();
-        humanPlayer = GameObject.Find("Player").GetComponent<PlayerController>();        
+        humanPlayer = GameObject.Find("Player").GetComponent<PlayerController>();
+        attackEnemyManager = GameObject.Find("Attack Enemy Manager").GetComponent<AttackEnemyManager>();
 
         // Update the start position of the element
         xPos = (int)transform.position.x;
@@ -85,6 +88,7 @@ public class Enemy : MonoBehaviour
         }       
     }
 
+    
     void MoveManager()
     {
 
@@ -239,10 +243,15 @@ public class Enemy : MonoBehaviour
 
         // If player and enemy are in adjacent spaces on X or Z do something
         if ((distanceX == 1 && distanceZ == 0) || (distanceX == 0 && distanceZ == 1))
-        {            
-            attackChance = true;
-            gameManager.activeTurnText.text = "Enemy Attack";
-            attackEnemyPanel.gameObject.SetActive(true);
+        {       
+            if (!attackExecuted)
+            {
+                attackChance = true;
+                gameManager.activeTurnText.text = "Enemy Attack";
+                attackEnemyPanel.gameObject.SetActive(true);
+                attackEnemyManager.SetNewEnemyAttack();
+                attackExecuted = true;
+            }
         }     
     }
 

@@ -16,7 +16,7 @@ public class AttackEnemyManager : MonoBehaviour
     public Button moveToStamEnemyBtn;
     public TextMeshProUGUI moveToStamEnemyText;
     public TextMeshProUGUI moveToStamEnemyDiceText;
-
+    
     public Button launchEnemyBtn;
 
     private Enemy enemy;
@@ -24,21 +24,18 @@ public class AttackEnemyManager : MonoBehaviour
     private GameManager gameManager;
     private AttackDicePlayer attackDicePlayer;
 
+    public GameObject attackEnemyPanel;
+
     void Start()
     {
         enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-        attackDicePlayer = GameObject.Find("Attack Dice Player 2").GetComponent<AttackDicePlayer>();
-
-        StaminaEnemy();
-        MoveEnemyToStamina();
-        EnemyHasPowerup();
-        ShowPowerup();        
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();              
     }
 
-    private void OnEnable()
-    {        
+    public void SetNewEnemyAttack()
+    {
+        attackDicePlayer = GameObject.Find("Attack Dice Player 2").GetComponent<AttackDicePlayer>();
         StaminaEnemy();
         MoveEnemyToStamina();
         EnemyHasPowerup();
@@ -165,9 +162,10 @@ public class AttackEnemyManager : MonoBehaviour
         }
 
         launchEnemyBtn.gameObject.SetActive(false);
-        gameObject.SetActive(false);
+        attackEnemyPanel.gameObject.SetActive(false);
         gameManager.SetTurn();
         enemy.attackChance = false;
+        enemy.attackExecuted = false;
     }
 
     void UpdateData()
