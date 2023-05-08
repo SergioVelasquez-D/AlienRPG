@@ -94,9 +94,7 @@ public class Enemy : MonoBehaviour
         int distanceZ = (humanPlayer.zPos - zPos); // Distance in z between the humanPlayer and the enemy
         Vector3 moveDirection = Vector3.zero;
 
-        bool foundSpace = false;
-
-        
+        bool foundSpace = false;        
 
         if (Mathf.Abs(distanceX) > Mathf.Abs(distanceZ))
         {
