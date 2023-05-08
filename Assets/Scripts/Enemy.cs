@@ -88,8 +88,159 @@ public class Enemy : MonoBehaviour
         }       
     }
 
-    
     void MoveManager()
+    {
+        int distanceX = (humanPlayer.xPos - xPos); // Distance in X between the humanPlayer and the enemy
+        int distanceZ = (humanPlayer.zPos - zPos); // Distance in z between the humanPlayer and the enemy
+        Vector3 moveDirection = Vector3.zero;
+
+        bool foundSpace = false;
+
+        
+
+        if (Mathf.Abs(distanceX) > Mathf.Abs(distanceZ))
+        {
+            int xDirection = distanceX > 0 ? 1 : -1;
+            
+            if (!gameManager.spaceTaken[xPos + xDirection, zPos])
+            {
+                foundSpace = true;
+                moveDirection = new Vector3(xDirection, 0, 0);
+                transform.Translate(moveDirection, Space.World);
+                xPos += xDirection;
+                if (xDirection > 0)
+                {
+                    UpdateSpaces(3);
+                }
+                else
+                {
+                    UpdateSpaces(4);
+                }
+            }
+        }
+
+        if (!foundSpace)
+        {
+            int zDirection = distanceZ > 0 ? 1 : -1;
+            if (!gameManager.spaceTaken[xPos, zPos + zDirection])
+            {
+                foundSpace = true;
+                moveDirection = new Vector3(0, 0, zDirection);
+                transform.Translate(moveDirection, Space.World);
+                zPos += zDirection;
+                if (zDirection > 0)
+                {
+                    UpdateSpaces(1);
+                }
+                else
+                {
+                    UpdateSpaces(2);
+                }
+            }
+        }
+
+        if (!foundSpace)
+        {
+            while (!foundSpace)
+            {
+                int randomAxis = Random.Range(0, 2);
+                //int randomDirection = (Random.Range(0, 2) * 2 - 1);
+
+                if (randomAxis == 0)
+                {
+                    int randomDirection = (distanceX > 0 ? 1 : -1);
+
+                    if (!gameManager.spaceTaken[xPos + randomDirection, zPos])
+                    {
+                        foundSpace = true;
+                        Vector3 randomXDir = new Vector3(randomDirection, 0, 0);
+                        transform.Translate(randomXDir, Space.World);
+                        xPos += randomDirection;
+                        if (randomDirection > 0)
+                        {
+                            UpdateSpaces(3);
+                        }
+                        else
+                        {
+                            UpdateSpaces(4);
+                        }
+                    }
+
+                }
+                else if(randomAxis == 1)
+                {
+                    int randomDirection = (distanceZ > 0 ? 1 : -1);
+
+                    if (!gameManager.spaceTaken[xPos, zPos + randomDirection])
+                    {
+                        foundSpace = true;
+                        Vector3 randomZDir = new Vector3(0, 0, randomDirection);
+                        transform.Translate(randomZDir, Space.World);
+                        zPos += randomDirection;
+                        if (randomDirection > 0)
+                        {
+                            UpdateSpaces(1);
+                        }
+                        else
+                        {
+                            UpdateSpaces(2);
+                        }
+                    }
+
+                }
+                else
+                {
+                    // Check a random direction
+                    int randomAxis2 = Random.Range(0, 2);
+
+                    if (randomAxis2 == 0)
+                    {
+                        // Check the X axis
+                        int randomDirection = (Random.Range(0, 2) * 2 - 1);
+                        if (!gameManager.spaceTaken[xPos + randomDirection, zPos])
+                        {
+                            foundSpace = true;
+                            moveDirection = new Vector3(randomDirection, 0, 0);
+                            transform.Translate(moveDirection, Space.World);
+                            xPos += randomDirection;
+                            if (randomDirection > 0)
+                            {
+                                UpdateSpaces(3);
+                            }
+                            else
+                            {
+                                UpdateSpaces(4);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Check the Z axis
+                        int randomDirection = (Random.Range(0, 2) * 2 - 1);
+                        if (!gameManager.spaceTaken[xPos, zPos + randomDirection])
+                        {
+                            foundSpace = true;
+                            moveDirection = new Vector3(0, 0, randomDirection);
+                            transform.Translate(moveDirection, Space.World);
+                            zPos += randomDirection;
+                            if (randomDirection > 0)
+                            {
+                                UpdateSpaces(1);
+                            }
+                            else
+                            {
+                                UpdateSpaces(2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Invoke("ControlTurn", 0.2f);     
+    }
+
+    void MoveManagerOld()
     {
 
         int distanceX = (humanPlayer.xPos - xPos); // Distance in X between the humanPlayer and the enemy
